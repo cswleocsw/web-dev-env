@@ -87,7 +87,7 @@ gulp.task('server', function() {
       baseDir: 'build',
     },
     files: [
-      'build/**'
+      'build/**/*'
     ],
     open: false,
     logConnections: true
