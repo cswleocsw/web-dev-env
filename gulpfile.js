@@ -24,7 +24,7 @@ gulp.task('default', function() {
 
 gulp.task('watch', function() {
   gulp.watch('src/**', function(vinyl) {
-    console.log('File ' + vinyl.path + ' was ' + vinyl.type + ', running tasks...');
+    gutil.log(gutil.colors.green('[Info]'), 'File ' + vinyl.path + ' was ' + vinyl.type + ', running tasks...');
     var m = vinyl.path.match(/\.([^\.]{1,})$/);
     if (m) {
       switch (m[1]) {
@@ -101,10 +101,11 @@ gulp.task('webpack', function() {
       'process.env.NODE_ENV': JSON.stringify('development')
     })
   ]);
-  webpack(config, function(error) {
+  webpack(config, function(error, stats) {
     if (error) {
-      gutil.log(gutil.colors.red('[Error]'), error);
+      gutil.log(gutil.colors.red('[webpack]'), error);
     }
+    gutil.log(gutil.colors.blue('[webpack]'), gutil.colors.green(stats.toString()));
   });
 });
 
@@ -138,10 +139,11 @@ gulp.task('build:webpack', function() {
       }
     })
   ]);
-  webpack(config, function(error) {
+  webpack(config, function(error, stats) {
     if (error) {
-      gutil.log(gutil.colors.red('[Error]'), error);
+      gutil.log(gutil.colors.red('[webpack]'), error);
     }
+    gutil.log(gutil.colors.blue('[webpack]'), gutil.colors.green(stats.toString()));
   });
 });
 
