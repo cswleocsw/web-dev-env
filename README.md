@@ -1,11 +1,11 @@
 # web-dev-env
+前端開發環境
 
-## 開發環境
-[compass](http://compass-style.org/)
-[webpack](https://webpack.github.io/)
+# pre-processor
+html: [jade](http://jade-lang.com/)  
+css: [compass](http://compass-style.org/)  
+js: [webpack](https://webpack.github.io/)  
 
-## 預處理器
-css: .sass .scss  
-html: .jade  
-js: .js .jsx  
-
+# slush-orz
+[slush](http://slushjs.github.io/#/) - scaffolding tool  
+[slush-orz](https://github.com/cswleocsw/slush-orz) - slush generator for web-dev-env 
