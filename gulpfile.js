@@ -23,7 +23,7 @@ gulp.task('default', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/*', function(vinyl) {
+  gulp.watch('src/**', function(vinyl) {
     console.log('File ' + vinyl.path + ' was ' + vinyl.type + ', running tasks...');
     var m = vinyl.path.match(/\.([^\.]{1,})$/);
     if (m) {
