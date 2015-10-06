@@ -4,7 +4,6 @@ var gutil = require('gulp-util');
 var path = require('path');
 var bs = require('browser-sync').create();
 var spa = require('browser-sync-spa');
-var Imagemin = require('imagemin');
 var rimraf = require('rimraf');
 var jade = require('gulp-jade');
 var webpack = require('webpack');
@@ -12,6 +11,8 @@ var assign = require('object-assign');
 var sequence = require('run-sequence');
 var ghPages = require('gh-pages');
 var git = require('git-rev-sync');
+var _ = require('lodash');
+var autoprefixer = require('gulp-autoprefixer');
 
 // config
 var compassConfig = require('./compass.config');
@@ -19,7 +20,7 @@ var webpackConfig = require('./webpack.config');
 
 
 gulp.task('default', function() {
-  sequence('image', 'font', 'jade', 'compass', 'webpack', 'server', 'watch');
+  sequence('copy', 'jade', 'compass', 'webpack', 'server', 'watch');
 });
 
 gulp.task('watch', function() {
@@ -58,16 +59,14 @@ gulp.task('jade', function() {
     .pipe(gulp.dest('build'))
 });
 
-gulp.task('image', function() {
-  new Imagemin()
-    .src('src/img/**/*.{gif,jpg,png,svg}')
-    .dest('build/img')
-    .run();
-});
-
-gulp.task('font', function() {
-  return gulp.src(['src/font/**/*'])
-    .pipe(gulp.dest('build/font'));
+gulp.task('copy', function () {
+  var folders = {
+    'src/img/**/*': 'build/img',
+    'src/font/**/*': 'build/font'
+  };
+  _.each(folders, function(dest, src) {
+    gulp.src(src).pipe(gulp.dest(dest));
+  });
 });
 
 gulp.task('compass', function() {
@@ -76,7 +75,12 @@ gulp.task('compass', function() {
     .on('error', function(error) {
       gutil.log(gutil.colors.red('[Error]'), error);
       this.emit('end');
-    });
+    })
+    .pipe(autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(gulp.dest(compassConfig.css));
 });
 
 gulp.task('server', function() {
@@ -110,7 +114,7 @@ gulp.task('webpack', function() {
 });
 
 gulp.task('build', function() {
-  sequence('image', 'font', 'jade', 'build:compass', 'build:webpack');
+  sequence('copy', 'jade', 'build:compass', 'build:webpack');
 });
 
 gulp.task('build:compass', function() {
@@ -123,7 +127,12 @@ gulp.task('build:compass', function() {
     .on('error', function(error) {
       gutil.log(gutil.colors.red('[Error]'), error);
       this.emit('end');
-    });
+    })
+    .pipe(autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(gulp.dest(compassConfig.css));
 });
 
 gulp.task('build:webpack', function() {
