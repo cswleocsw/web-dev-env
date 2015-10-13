@@ -18,6 +18,10 @@ var autoprefixer = require('gulp-autoprefixer');
 var compassConfig = require('./compass.config');
 var webpackConfig = require('./webpack.config');
 
+function getSuffixName(str) {
+  var m = str.match(/\.([^\.]{1,})$/);
+  return m ? m[1] : '';
+}
 
 gulp.task('default', function() {
   sequence('copy', 'jade', 'compass', 'webpack', 'server', 'watch');
@@ -26,20 +30,17 @@ gulp.task('default', function() {
 gulp.task('watch', function() {
   gulp.watch('src/**', function(vinyl) {
     gutil.log(gutil.colors.green('[Info]'), 'File ' + vinyl.path + ' was ' + vinyl.type + ', running tasks...');
-    var m = vinyl.path.match(/\.([^\.]{1,})$/);
-    if (m) {
-      switch (m[1]) {
-        case 'jade':
-          gulp.start('jade');
-          break;
-        case 'sass':
-        case 'scss':
-          gulp.start('compass');
-          break;
-        case 'js':
-          gulp.start('webpack');
-          break;
-      }
+    switch (getSuffixName(vinyl.path)) {
+      case 'jade':
+        gulp.start('jade');
+        break;
+      case 'sass':
+      case 'scss':
+        gulp.start('compass');
+        break;
+      case 'js':
+        gulp.start('webpack');
+        break;
     }
   });
 });
@@ -53,13 +54,13 @@ gulp.task('clean', function() {
 gulp.task('jade', function() {
   gulp.src('src/**/*.jade')
     .pipe(jade())
-    .on('error', function (error) {
+    .on('error', function(error) {
       gutil.log(gutil.colors.red('[Error]'), error.message);
     })
     .pipe(gulp.dest('build'))
 });
 
-gulp.task('copy', function () {
+gulp.task('copy', function() {
   var folders = {
     'src/img/**/*': 'build/img',
     'src/font/**/*': 'build/font'
