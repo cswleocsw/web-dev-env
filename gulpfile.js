@@ -13,6 +13,7 @@ var ghPages = require('gh-pages');
 var git = require('git-rev-sync');
 var _ = require('lodash');
 var autoprefixer = require('gulp-autoprefixer');
+var spawn = require('child_process').spawn;
 
 // config
 var compassConfig = require('./compass.config');
@@ -42,6 +43,7 @@ gulp.task('watch', function() {
         gulp.start('webpack');
         break;
     }
+    bs.reload();
   });
 });
 
@@ -85,17 +87,29 @@ gulp.task('compass', function() {
 });
 
 gulp.task('server', function() {
+  var server = spawn('node', ['./server.js']);
+
+  server.stdout.on('data', function(data) {
+    gutil.log(gutil.colors.green('[server]'), data.toString());
+  });
+
+  server.stderr.on('data', function(data) {
+    gutil.log(gutil.colors.red('[server]'), data.toString());
+  });
+
+  server.on('exit', function(code) {
+    gutil.log(gutil.colors.red('[server]'), 'child process exited with code ' + code);
+  });
+
   bs.use(spa());
+
   bs.init({
     port: 4000,
-    server: {
-      baseDir: 'build',
-    },
-    files: [
-      'build/**/*'
-    ],
+    proxy: 'http://127.0.0.1:3000',
     open: false,
-    logConnections: true
+    logConnections: true,
+    reloadDelay: 1000,
+    reloadDebounce: 5000
   });
 });
 
@@ -110,7 +124,9 @@ gulp.task('webpack', function() {
     if (error) {
       gutil.log(gutil.colors.red('[webpack]'), error);
     }
-    gutil.log(gutil.colors.blue('[webpack]'), gutil.colors.green(stats.toString()));
+    gutil.log(gutil.colors.blue('[webpack]'), gutil.colors.green(stats.toString({
+      chunks: false
+    })));
   });
 });
 

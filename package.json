@@ -19,6 +19,7 @@
     "browser-sync": "^2.9.3",
     "browser-sync-spa": "^1.0.3",
     "bs-html-injector": "^2.0.4",
+    "express": "^4.13.3",
     "gh-pages": "^0.4.0",
     "git-rev-sync": "^1.4.0",
     "gulp": "^3.9.0",
