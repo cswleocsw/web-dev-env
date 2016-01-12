@@ -105,7 +105,7 @@ gulp.task('server', function() {
 
   bs.init({
     port: 4000,
-    proxy: 'http://127.0.0.1:3000',
+    proxy: 'http://localhost:3000',
     open: false,
     logConnections: true,
     reloadDelay: 1000,
