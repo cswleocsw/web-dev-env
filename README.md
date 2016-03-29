@@ -3,7 +3,7 @@
 
 # pre-processor
 html: [jade](http://jade-lang.com/)  
-css: [compass](http://compass-style.org/)  
+css: [node-sass](https://www.npmjs.com/package/node-sass)  
 js: [webpack](https://webpack.github.io/)  
 
 # slush-orz

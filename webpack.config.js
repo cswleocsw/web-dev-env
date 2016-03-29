@@ -1,37 +1,38 @@
 var path = require('path');
 var webpack = require('webpack');
 
-module.exports = {
+var config = {
+  context: path.resolve(__dirname, 'src/js'),
+
   cache: true,
 
   entry: {
-    app: './src/js/app'
+    app: 'index.js',
+    vendor: ['lodash']
   },
 
   output: {
-    path: path.join(__dirname, 'build/js'),
-    publicPath: '',
+    path: path.resolve('./build/js'),
     filename: 'bundle.js'
   },
 
-  devtool: 'source-map',
-
   module: {
-    loaders: [],
+    loaders: [
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
+    ],
     noParse: [/\.min\.js/]
   },
 
   resolve: {
-    root: [path.join(__dirname, 'build/js')],
-    modulesDirectories: ['node_modules', 'bower_components'],
+    root: [path.join(__dirname, 'src/js')],
+    modulesDirectories: ['node_modules'],
     extensions: ['', '.js'],
     alias: []
   },
 
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.ResolverPlugin(
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
-    )
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
   ]
 };
+
+module.exports = config;
